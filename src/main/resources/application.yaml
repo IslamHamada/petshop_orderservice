@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: OrderService
+  config:
+    import: configserver:http://localhost:8082
+  datasource:
+    url: jdbc:mysql://localhost:3306/petshop
+    username: root
+    password: root
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: dev-atfpp36qj24tzo8l.us.auth0.com
+
+server:
+  port: 8084
