@@ -26,4 +26,6 @@ public class Order {
     private long userId;
 
     private Instant time;
+
+    private double price;
 }

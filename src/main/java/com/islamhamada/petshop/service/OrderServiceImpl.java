@@ -63,9 +63,13 @@ public class OrderServiceImpl implements OrderService{
                     elaborateOrderItems.add(elaborateOrderItem);
                 }
         );
+        double price = elaborateOrderItems.stream()
+                .mapToDouble(o -> o.getPrice() * o.getCount())
+                .sum();
         ElaborateOrder elaborateOrder = ElaborateOrder.builder()
                 .time(order.getTime())
                 .elaborateOrderItems(elaborateOrderItems)
+                .price(price)
                 .build();
         cartService.emptyCartOfUser(user_id);
         return elaborateOrder;

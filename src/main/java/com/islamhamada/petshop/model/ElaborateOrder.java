@@ -10,5 +10,6 @@ import java.util.List;
 @Builder
 public class ElaborateOrder {
     private Instant time;
+    private double price;
     private List<ElaborateOrderItem> elaborateOrderItems;
 }
