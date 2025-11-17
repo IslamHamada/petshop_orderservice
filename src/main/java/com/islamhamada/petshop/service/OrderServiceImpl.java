@@ -4,6 +4,7 @@ import com.islamhamada.petshop.contracts.CartItemDTO;
 import com.islamhamada.petshop.contracts.ProductDTO;
 import com.islamhamada.petshop.entity.Order;
 import com.islamhamada.petshop.entity.OrderItem;
+import com.islamhamada.petshop.exception.OrderServiceException;
 import com.islamhamada.petshop.external.service.CartService;
 import com.islamhamada.petshop.external.service.ProductService;
 import com.islamhamada.petshop.model.ElaborateOrder;
@@ -11,6 +12,7 @@ import com.islamhamada.petshop.model.ElaborateOrderItem;
 import com.islamhamada.petshop.repository.OrderItemRepository;
 import com.islamhamada.petshop.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -39,7 +41,7 @@ public class OrderServiceImpl implements OrderService{
                 .userId(user_id)
                 .time(Instant.now())
                 .build();
-        orderRepository.save(order);
+
         List<OrderItem> orderItems = new ArrayList<>();
         cart.forEach(
                 cartItem -> {
@@ -48,13 +50,14 @@ public class OrderServiceImpl implements OrderService{
                             .count(cartItem.getCount())
                             .productId(cartItem.getProductId())
                             .build();
-                    orderItemRepository.save(orderItem);
                     orderItems.add(orderItem);
                 }
         );
         List<ElaborateOrderItem> elaborateOrderItems = new ArrayList<>();
         orderItems.forEach(orderItem -> {
                     ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
+                    if(product.getQuantity() < orderItem.getCount())
+                        throw new OrderServiceException("Not enough " + product.getName() + " in stock", 409, HttpStatus.CONFLICT);
                     ElaborateOrderItem elaborateOrderItem = ElaborateOrderItem.builder()
                             .price(product.getPrice())
                             .count(orderItem.getCount())
@@ -63,6 +66,8 @@ public class OrderServiceImpl implements OrderService{
                     elaborateOrderItems.add(elaborateOrderItem);
                 }
         );
+        orderItems.forEach(o -> orderItemRepository.save(o));
+        orderRepository.save(order);
         double price = elaborateOrderItems.stream()
                 .mapToDouble(o -> o.getPrice() * o.getCount())
                 .sum();
