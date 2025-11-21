@@ -1,6 +1,6 @@
 package com.islamhamada.petshop.service;
 
-import com.islamhamada.petshop.contracts.CartItemDTO;
+import com.islamhamada.petshop.contracts.ElaborateCartItemDTO;
 import com.islamhamada.petshop.contracts.ProductDTO;
 import com.islamhamada.petshop.entity.Order;
 import com.islamhamada.petshop.entity.OrderItem;
@@ -36,7 +36,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ElaborateOrder orderUserCart(long user_id) {
-        List<CartItemDTO> cart = cartService.getCartByUser(user_id).getBody();
+        List<ElaborateCartItemDTO> cart = cartService.getCartByUser(user_id).getBody();
         Order order = Order.builder()
                 .userId(user_id)
                 .time(Instant.now())
@@ -47,8 +47,8 @@ public class OrderServiceImpl implements OrderService{
                 cartItem -> {
                     OrderItem orderItem = OrderItem.builder()
                             .orderId(order.getId())
-                            .count(cartItem.getCount())
-                            .productId(cartItem.getProductId())
+                            .count(cartItem.getCart_item_count())
+                            .productId(cartItem.getProduct_id())
                             .build();
                     orderItems.add(orderItem);
                 }
