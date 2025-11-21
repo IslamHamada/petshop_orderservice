@@ -16,5 +16,5 @@ public interface CartService {
     ResponseEntity<List<ElaborateCartItemDTO>> getCartByUser(@PathVariable long user_id);
 
     @DeleteMapping("/{user_id}")
-    ResponseEntity<Void> emptyCartOfUser(@PathVariable long user_id);
+    ResponseEntity<Long> emptyCartOfUser(@PathVariable long user_id);
 }
