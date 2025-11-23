@@ -15,7 +15,7 @@ spec:
         - name: dockerhub-secret
       containers:
         - name: order-service-app
-          image: islamhamada/petshop:OrderService
+          image: IMAGE_URL/order-service
           imagePullPolicy: Always
           resources:
             limits:

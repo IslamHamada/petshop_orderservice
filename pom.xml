@@ -136,7 +136,13 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>3.5.0</version>
                 <configuration>
-                    <to>${dockerhub-repo}:${project.artifactId}</to>
+                    <from>
+                        <image>eclipse-temurin:17-jdk</image>
+                    </from>
+                    <to>
+                        <image>${REPO_URL}/order-service</image>
+                        <tags>${project.version}</tags>
+                    </to>
                 </configuration>
             </plugin>
 		</plugins>
