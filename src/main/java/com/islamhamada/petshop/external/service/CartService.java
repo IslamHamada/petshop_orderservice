@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(name = "CartService/cart")
+@FeignClient(
+        name = "cart-service",
+        url = "http://cart-service-svc"
+)
 public interface CartService {
 
     @GetMapping("/{user_id}")
