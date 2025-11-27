@@ -9,6 +9,7 @@ import com.islamhamada.petshop.external.service.CartService;
 import com.islamhamada.petshop.external.service.ProductService;
 import com.islamhamada.petshop.model.ElaborateOrder;
 import com.islamhamada.petshop.model.ElaborateOrderItem;
+import com.islamhamada.petshop.model.OrderCartRequest;
 import com.islamhamada.petshop.repository.OrderItemRepository;
 import com.islamhamada.petshop.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,11 +36,19 @@ public class OrderServiceImpl implements OrderService{
     private ProductService productService;
 
     @Override
-    public ElaborateOrder orderUserCart(long user_id) {
+    public ElaborateOrder orderUserCart(long user_id, OrderCartRequest request) {
         List<ElaborateCartItemDTO> cart = cartService.getCartByUser(user_id).getBody();
         Order order = Order.builder()
                 .userId(user_id)
                 .time(Instant.now())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .phoneNumber(request.getPhoneNumber())
+                .country(request.getCountry())
+                .city(request.getCity())
+                .houseNumber(request.getHouseNumber())
+                .postalCode(request.getPostalCode())
+                .street(request.getStreet())
                 .build();
 
         List<OrderItem> orderItems = new ArrayList<>();
