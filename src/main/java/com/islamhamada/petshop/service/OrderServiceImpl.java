@@ -110,6 +110,15 @@ public class OrderServiceImpl implements OrderService{
             ElaborateOrder elaborateOrder = ElaborateOrder.builder()
                     .elaborateOrderItems(elaborateOrderItems)
                     .time(order.getTime())
+                    .price(order.getPrice())
+                    .firstName(order.getFirstName())
+                    .lastName(order.getLastName())
+                    .phoneNumber(order.getPhoneNumber())
+                    .country(order.getCountry())
+                    .city(order.getCity())
+                    .street(order.getStreet())
+                    .houseNumber(order.getHouseNumber())
+                    .postalCode(order.getPostalCode())
                     .build();
             elaborateOrders.add(elaborateOrder);
         }
