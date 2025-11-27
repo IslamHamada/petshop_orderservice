@@ -46,6 +46,7 @@ public class OrderServiceImpl implements OrderService{
         cart.forEach(
                 cartItem -> {
                     OrderItem orderItem = OrderItem.builder()
+                            .orderId(order.getId())
                             .count(cartItem.getCart_item_count())
                             .productId(cartItem.getProduct_id())
                             .build();
