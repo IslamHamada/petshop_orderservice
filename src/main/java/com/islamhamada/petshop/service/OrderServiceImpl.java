@@ -46,7 +46,6 @@ public class OrderServiceImpl implements OrderService{
         cart.forEach(
                 cartItem -> {
                     OrderItem orderItem = OrderItem.builder()
-                            .orderId(order.getId())
                             .count(cartItem.getCart_item_count())
                             .productId(cartItem.getProduct_id())
                             .build();
@@ -66,11 +65,12 @@ public class OrderServiceImpl implements OrderService{
                     elaborateOrderItems.add(elaborateOrderItem);
                 }
         );
-        orderItems.forEach(o -> orderItemRepository.save(o));
-        orderRepository.save(order);
         double price = elaborateOrderItems.stream()
                 .mapToDouble(o -> o.getPrice() * o.getCount())
                 .sum();
+        long order_id = orderRepository.save(order).getId();
+        orderItems.forEach(o -> o.setOrderId(order_id));
+        orderItems.forEach(o -> orderItemRepository.save(o));
         ElaborateOrder elaborateOrder = ElaborateOrder.builder()
                 .time(order.getTime())
                 .elaborateOrderItems(elaborateOrderItems)
