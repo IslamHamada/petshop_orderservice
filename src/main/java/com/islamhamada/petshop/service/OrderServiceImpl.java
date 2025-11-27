@@ -91,6 +91,7 @@ public class OrderServiceImpl implements OrderService{
             for(OrderItem orderItem : orderItems){
                 ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
                 ElaborateOrderItem elaborateOrderItem = ElaborateOrderItem.builder()
+                        .product_id(product.getId())
                         .product_name(product.getName())
                         .count(orderItem.getCount())
                         .price(product.getPrice())
