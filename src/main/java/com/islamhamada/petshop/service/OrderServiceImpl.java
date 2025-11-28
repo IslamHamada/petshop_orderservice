@@ -66,17 +66,16 @@ public class OrderServiceImpl implements OrderService{
                     elaborateOrderItems.add(elaborateOrderItem);
                 }
         );
+        orderItems.forEach(o -> orderItemRepository.save(o));
         double price = elaborateOrderItems.stream()
                 .mapToDouble(o -> o.getPrice() * o.getCount())
                 .sum();
         order.setPrice(price);
-        long order_id = orderRepository.save(order).getId();
-        orderItems.forEach(o -> o.setOrderId(order_id));
-        orderItems.forEach(o -> orderItemRepository.save(o));
+        orderRepository.save(order);
         ElaborateOrder elaborateOrder = ElaborateOrder.builder()
                 .time(order.getTime())
                 .elaborateOrderItems(elaborateOrderItems)
-                .price(price)
+                .price(order.getPrice())
                 .build();
         cartService.emptyCartOfUser(user_id);
         return elaborateOrder;
