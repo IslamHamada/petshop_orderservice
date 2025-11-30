@@ -8,7 +8,8 @@ import com.islamhamada.petshop.exception.OrderServiceException;
 import com.islamhamada.petshop.external.service.CartService;
 import com.islamhamada.petshop.external.service.ProductService;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderDTO;
-import com.islamhamada.petshop.model.ElaborateOrderItem;
+import com.islamhamada.petshop.contracts.dto.ElaborateOrderItemDTO;
+import com.islamhamada.petshop.model.OrderCartRequest;
 import com.islamhamada.petshop.repository.OrderItemRepository;
 import com.islamhamada.petshop.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,12 +54,12 @@ public class OrderServiceImpl implements OrderService{
                     orderItems.add(orderItem);
                 }
         );
-        List<ElaborateOrderItem> elaborateOrderItems = new ArrayList<>();
+        List<ElaborateOrderItemDTO> elaborateOrderItems = new ArrayList<>();
         orderItems.forEach(orderItem -> {
                     ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
                     if(product.getQuantity() < orderItem.getCount())
                         throw new OrderServiceException("Not enough " + product.getName() + " in stock", 409, HttpStatus.CONFLICT);
-                    ElaborateOrderItem elaborateOrderItem = ElaborateOrderItem.builder()
+                    ElaborateOrderItemDTO elaborateOrderItem = ElaborateOrderItemDTO.builder()
                             .price(product.getPrice())
                             .count(orderItem.getCount())
                             .product_name(product.getName())
@@ -88,11 +89,12 @@ public class OrderServiceImpl implements OrderService{
         List<Order> orders = orderRepository.findByUserIdOrderByTimeDesc(user_id);
         List<ElaborateOrderDTO> elaborateOrders = new ArrayList<>();
         for(Order order : orders){
-            List<ElaborateOrderItem> elaborateOrderItems = new ArrayList<>();
+            List<ElaborateOrderItemDTO> elaborateOrderItems = new ArrayList<>();
             List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
             for(OrderItem orderItem : orderItems){
                 ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
-                ElaborateOrderItem elaborateOrderItem = ElaborateOrderItem.builder()
+                ElaborateOrderItemDTO elaborateOrderItem = ElaborateOrderItemDTO.builder()
+                        .product_id(product.getId())
                         .product_name(product.getName())
                         .count(orderItem.getCount())
                         .price(product.getPrice())
