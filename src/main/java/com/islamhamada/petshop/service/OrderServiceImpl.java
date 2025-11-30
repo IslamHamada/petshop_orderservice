@@ -92,7 +92,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public List<ElaborateOrderDTO> getOrders(long user_id) {
-        List<Order> orders = orderRepository.findOrderByUserId(user_id);
+        List<Order> orders = orderRepository.findByUserIdOrderByTimeDesc(user_id);
         List<ElaborateOrderDTO> elaborateOrders = new ArrayList<>();
         for(Order order : orders){
             List<ElaborateOrderItem> elaborateOrderItems = new ArrayList<>();
