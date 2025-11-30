@@ -7,7 +7,7 @@ import com.islamhamada.petshop.entity.OrderItem;
 import com.islamhamada.petshop.exception.OrderServiceException;
 import com.islamhamada.petshop.external.service.CartService;
 import com.islamhamada.petshop.external.service.ProductService;
-import com.islamhamada.petshop.model.ElaborateOrder;
+import com.islamhamada.petshop.contracts.dto.ElaborateOrderDTO;
 import com.islamhamada.petshop.model.ElaborateOrderItem;
 import com.islamhamada.petshop.model.OrderCartRequest;
 import com.islamhamada.petshop.repository.OrderItemRepository;
@@ -36,7 +36,7 @@ public class OrderServiceImpl implements OrderService{
     private ProductService productService;
 
     @Override
-    public ElaborateOrder orderUserCart(long user_id, OrderCartRequest request) {
+    public ElaborateOrderDTO orderUserCart(long user_id, OrderCartRequest request) {
         List<ElaborateCartItemDTO> cart = cartService.getCartByUser(user_id).getBody();
         Order order = Order.builder()
                 .userId(user_id)
@@ -81,7 +81,7 @@ public class OrderServiceImpl implements OrderService{
         long order_id = orderRepository.save(order).getId();
         orderItems.forEach(o -> o.setOrderId(order_id));
         orderItems.forEach(o -> orderItemRepository.save(o));
-        ElaborateOrder elaborateOrder = ElaborateOrder.builder()
+        ElaborateOrderDTO elaborateOrder = ElaborateOrderDTO.builder()
                 .time(order.getTime())
                 .elaborateOrderItems(elaborateOrderItems)
                 .price(price)
@@ -91,9 +91,9 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public List<ElaborateOrder> getOrders(long user_id) {
+    public List<ElaborateOrderDTO> getOrders(long user_id) {
         List<Order> orders = orderRepository.findOrderByUserId(user_id);
-        List<ElaborateOrder> elaborateOrders = new ArrayList<>();
+        List<ElaborateOrderDTO> elaborateOrders = new ArrayList<>();
         for(Order order : orders){
             List<ElaborateOrderItem> elaborateOrderItems = new ArrayList<>();
             List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
@@ -107,7 +107,7 @@ public class OrderServiceImpl implements OrderService{
                         .build();
                 elaborateOrderItems.add(elaborateOrderItem);
             }
-            ElaborateOrder elaborateOrder = ElaborateOrder.builder()
+            ElaborateOrderDTO elaborateOrder = ElaborateOrderDTO.builder()
                     .elaborateOrderItems(elaborateOrderItems)
                     .time(order.getTime())
                     .price(order.getPrice())
