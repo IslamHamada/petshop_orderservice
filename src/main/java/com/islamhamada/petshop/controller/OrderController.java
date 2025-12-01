@@ -3,6 +3,7 @@ package com.islamhamada.petshop.controller;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderDTO;
 import com.islamhamada.petshop.model.OrderCartRequest;
 import com.islamhamada.petshop.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class OrderController {
 
     @PreAuthorize("hasAnyRole('Customer')")
     @PostMapping("/{user_id}")
-    public ResponseEntity<ElaborateOrderDTO> orderUserCart(@PathVariable long user_id, @RequestBody OrderCartRequest request){
+    public ResponseEntity<ElaborateOrderDTO> orderUserCart(@PathVariable long user_id, @Valid @RequestBody OrderCartRequest request){
         ElaborateOrderDTO elaborateOrder = orderService.orderUserCart(user_id, request);
         return new ResponseEntity<>(elaborateOrder, HttpStatus.OK);
     }
