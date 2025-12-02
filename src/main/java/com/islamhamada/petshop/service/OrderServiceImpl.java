@@ -38,16 +38,25 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public ElaborateOrderDTO orderUserCart(long user_id, OrderCartRequest request) {
         List<ElaborateCartItemDTO> cart = cartService.getCartByUser(user_id).getBody();
+        if(cart.isEmpty())
+            throw new OrderServiceException("Can't issue an order with an empty cart", "CANNOT_BE_ISSUED", HttpStatus.CONFLICT);
         Order order = Order.builder()
                 .userId(user_id)
                 .time(Instant.now())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .phoneNumber(request.getPhoneNumber())
+                .country(request.getCountry())
+                .city(request.getCity())
+                .houseNumber(request.getHouseNumber())
+                .postalCode(request.getPostalCode())
+                .street(request.getStreet())
                 .build();
 
         List<OrderItem> orderItems = new ArrayList<>();
         cart.forEach(
                 cartItem -> {
                     OrderItem orderItem = OrderItem.builder()
-                            .orderId(order.getId())
                             .count(cartItem.getCart_item_count())
                             .productId(cartItem.getProduct_id())
                             .build();
@@ -58,7 +67,7 @@ public class OrderServiceImpl implements OrderService{
         orderItems.forEach(orderItem -> {
                     ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
                     if(product.getQuantity() < orderItem.getCount())
-                        throw new OrderServiceException("Not enough " + product.getName() + " in stock", 409, HttpStatus.CONFLICT);
+                        throw new OrderServiceException("Not enough " + product.getName() + " in stock", "CANNOT_BE_ISSUED", HttpStatus.CONFLICT);
                     ElaborateOrderItemDTO elaborateOrderItem = ElaborateOrderItemDTO.builder()
                             .price(product.getPrice())
                             .count(orderItem.getCount())
