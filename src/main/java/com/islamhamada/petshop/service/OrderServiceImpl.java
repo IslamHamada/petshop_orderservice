@@ -38,6 +38,8 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public ElaborateOrderDTO orderUserCart(long user_id, OrderCartRequest request) {
         List<ElaborateCartItemDTO> cart = cartService.getCartByUser(user_id).getBody();
+        if(cart.isEmpty())
+            throw new OrderServiceException("Can't issue an order with an empty cart", "CANNOT_BE_ISSUED", HttpStatus.CONFLICT);
         Order order = Order.builder()
                 .userId(user_id)
                 .time(Instant.now())
