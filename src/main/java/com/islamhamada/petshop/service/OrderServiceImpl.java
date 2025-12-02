@@ -87,6 +87,14 @@ public class OrderServiceImpl implements OrderService{
                 .time(order.getTime())
                 .elaborateOrderItems(elaborateOrderItems)
                 .price(price)
+                .firstName(order.getFirstName())
+                .lastName(order.getLastName())
+                .phoneNumber(order.getPhoneNumber())
+                .country(order.getCountry())
+                .city(order.getCity())
+                .street(order.getStreet())
+                .houseNumber(order.getHouseNumber())
+                .postalCode(order.getPostalCode())
                 .build();
         cartService.emptyCartOfUser(user_id);
         return elaborateOrder;
