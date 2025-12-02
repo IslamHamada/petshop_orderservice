@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService{
         orderItems.forEach(orderItem -> {
                     ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
                     if(product.getQuantity() < orderItem.getCount())
-                        throw new OrderServiceException("Not enough " + product.getName() + " in stock", 409, HttpStatus.CONFLICT);
+                        throw new OrderServiceException("Not enough " + product.getName() + " in stock", "CANNOT_BE_ISSUED", HttpStatus.CONFLICT);
                     ElaborateOrderItemDTO elaborateOrderItem = ElaborateOrderItemDTO.builder()
                             .price(product.getPrice())
                             .count(orderItem.getCount())
