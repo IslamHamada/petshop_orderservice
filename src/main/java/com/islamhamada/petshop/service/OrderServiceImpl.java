@@ -76,7 +76,6 @@ public class OrderServiceImpl implements OrderService{
                     elaborateOrderItems.add(elaborateOrderItem);
                 }
         );
-        orderItems.forEach(o -> orderItemRepository.save(o));
         double price = elaborateOrderItems.stream()
                 .mapToDouble(o -> o.getPrice() * o.getCount())
                 .sum();
