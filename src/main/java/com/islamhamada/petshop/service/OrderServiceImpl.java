@@ -72,6 +72,7 @@ public class OrderServiceImpl implements OrderService{
                             .price(product.getPrice())
                             .count(orderItem.getCount())
                             .product_name(product.getName())
+                            .product_id(product.getId())
                             .build();
                     elaborateOrderItems.add(elaborateOrderItem);
                 }
