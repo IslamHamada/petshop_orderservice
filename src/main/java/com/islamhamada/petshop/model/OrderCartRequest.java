@@ -3,9 +3,15 @@ package com.islamhamada.petshop.model;
 import com.islamhamada.petshop.contracts.validator.PhoneNumberOrEmpty;
 import com.islamhamada.petshop.contracts.validator.PostalCodeOrEmpty;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class OrderCartRequest {
     @NotBlank
     private String firstName;
