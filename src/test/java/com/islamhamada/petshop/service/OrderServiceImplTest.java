@@ -139,7 +139,7 @@ class OrderServiceImplTest {
             int user_id = 1;
             OrderCartRequest orderCartRequest = getOrderCartRequestMock();
 
-            when(cartService.getCartByUser(any()))
+            when(cartService.getCartByUser(anyLong()))
                     .thenReturn(new ResponseEntity<>(List.of(), HttpStatus.OK));
 
             OrderServiceException exception = assertThrows(OrderServiceException.class,
