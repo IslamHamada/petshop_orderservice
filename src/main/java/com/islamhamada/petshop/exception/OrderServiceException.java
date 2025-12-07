@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 
 @Data
 public class OrderServiceException extends ServiceException {
-    private String errorCode;
     private HttpStatus httpStatus;
 
     public OrderServiceException(String message, String errorCode, HttpStatus httpStatus) {
