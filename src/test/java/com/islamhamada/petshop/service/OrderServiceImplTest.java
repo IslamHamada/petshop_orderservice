@@ -191,7 +191,7 @@ class OrderServiceImplTest {
                         .getProductById(productDTO.getId());
             }
 
-            assertEquals("Not enough " + problematic_product + " in stock", exception.getMessage());
+            assertEquals("Not enough " + problematic_product.getName() + " in stock", exception.getMessage());
             assertEquals("ORDER_CANNOT_BE_FOUND", exception.getErrorCode());
             assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
         }
