@@ -160,6 +160,7 @@ class OrderServiceImplTest {
             OrderCartRequest orderCartRequest = getOrderCartRequestMock();
             List<ElaborateCartItemDTO> elaborateCartItemDTOList = getElaborateCartItemDTOList();
             List<ProductDTO> productDTOList = getProductDTOList();
+            elaborateCartItemDTOList.get(elaborateCartItemDTOList.size() - 1).setCart_item_count(productDTOList.get(productDTOList.size() - 1).getQuantity() + 1);
 
             when(cartService.getCartByUser(user_id))
                     .thenReturn(new ResponseEntity<>(elaborateCartItemDTOList, HttpStatus.OK));
