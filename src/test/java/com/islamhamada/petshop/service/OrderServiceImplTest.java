@@ -192,7 +192,7 @@ class OrderServiceImplTest {
             }
 
             assertEquals("Not enough " + problematic_product.getName() + " in stock", exception.getMessage());
-            assertEquals("ORDER_CANNOT_BE_FOUND", exception.getErrorCode());
+            assertEquals("ORDER_CANNOT_BE_ISSUED", exception.getError_code());
             assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
         }
 
