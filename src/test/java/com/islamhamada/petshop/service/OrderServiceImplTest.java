@@ -149,7 +149,7 @@ class OrderServiceImplTest {
                     .getCartByUser(anyLong());
 
             assertEquals("Can't issue an order with an empty cart", exception.getMessage());
-            assertEquals("ORDER_CANNOT_BE_ISSUED", exception.getErrorCode());
+            assertEquals("ORDER_CANNOT_BE_ISSUED", exception.getError_code());
             assertEquals(HttpStatus.CONFLICT, exception.getHttpStatus());
         }
 
