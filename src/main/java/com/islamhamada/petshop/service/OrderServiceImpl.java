@@ -40,6 +40,7 @@ public class OrderServiceImpl implements OrderService{
     @Override
     public ElaborateOrderDTO orderUserCart(long user_id, OrderCartRequest request) {
         log.info("Ordering cart of user with id: " + user_id);
+        log.info("Calling cart service to get the cart of the user");
         List<ElaborateCartItemDTO> cart = cartService.getCartByUser(user_id).getBody();
         if(cart.isEmpty())
             throw new OrderServiceException("Can't issue an order with an empty cart", "CANNOT_BE_ISSUED", HttpStatus.CONFLICT);
@@ -68,6 +69,7 @@ public class OrderServiceImpl implements OrderService{
         );
         List<ElaborateOrderItemDTO> elaborateOrderItems = new ArrayList<>();
         orderItems.forEach(orderItem -> {
+                    log.info("Calling product service to fetch info of product with id: " + orderItem.getProductId());
                     ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
                     if(product.getQuantity() < orderItem.getCount())
                         throw new OrderServiceException("Not enough " + product.getName() + " in stock", "CANNOT_BE_ISSUED", HttpStatus.CONFLICT);
@@ -86,7 +88,10 @@ public class OrderServiceImpl implements OrderService{
         order.setPrice(price);
         long order_id = orderRepository.save(order).getId();
         orderItems.forEach(o -> o.setOrderId(order_id));
-        orderItems.forEach(o -> orderItemRepository.save(o));
+        orderItems.forEach(o -> {
+            OrderItem item = orderItemRepository.save(o);
+            log.info("Saved individual cart item with id: " + item.getId());
+        });
         ElaborateOrderDTO elaborateOrder = ElaborateOrderDTO.builder()
                 .time(order.getTime())
                 .elaborateOrderItems(elaborateOrderItems)
@@ -100,6 +105,7 @@ public class OrderServiceImpl implements OrderService{
                 .houseNumber(order.getHouseNumber())
                 .postalCode(order.getPostalCode())
                 .build();
+        log.info("Calling cart service to empty user cart on ordering");
         cartService.emptyCartOfUser(user_id);
         log.info("User cart successfully ordered");
         return elaborateOrder;
@@ -112,8 +118,10 @@ public class OrderServiceImpl implements OrderService{
         List<ElaborateOrderDTO> elaborateOrders = new ArrayList<>();
         for(Order order : orders){
             List<ElaborateOrderItemDTO> elaborateOrderItems = new ArrayList<>();
+            log.info("Getting all items of order of id: " + order.getId());
             List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
             for(OrderItem orderItem : orderItems){
+                log.info("Calling product service to get product info of product with id: " + orderItem.getProductId());
                 ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
                 ElaborateOrderItemDTO elaborateOrderItem = ElaborateOrderItemDTO.builder()
                         .product_id(product.getId())
