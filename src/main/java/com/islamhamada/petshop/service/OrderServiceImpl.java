@@ -12,6 +12,7 @@ import com.islamhamada.petshop.contracts.dto.ElaborateOrderItemDTO;
 import com.islamhamada.petshop.model.OrderCartRequest;
 import com.islamhamada.petshop.repository.OrderItemRepository;
 import com.islamhamada.petshop.repository.OrderRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Service
 public class OrderServiceImpl implements OrderService{
 
@@ -37,6 +39,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public ElaborateOrderDTO orderUserCart(long user_id, OrderCartRequest request) {
+        log.info("Ordering cart of user with id: " + user_id);
         List<ElaborateCartItemDTO> cart = cartService.getCartByUser(user_id).getBody();
         if(cart.isEmpty())
             throw new OrderServiceException("Can't issue an order with an empty cart", "CANNOT_BE_ISSUED", HttpStatus.CONFLICT);
@@ -98,11 +101,13 @@ public class OrderServiceImpl implements OrderService{
                 .postalCode(order.getPostalCode())
                 .build();
         cartService.emptyCartOfUser(user_id);
+        log.info("User cart successfully ordered");
         return elaborateOrder;
     }
 
     @Override
     public List<ElaborateOrderDTO> getOrders(long user_id) {
+        log.info("Getting orders of user with id: " + user_id);
         List<Order> orders = orderRepository.findByUserIdOrderByTimeDesc(user_id);
         List<ElaborateOrderDTO> elaborateOrders = new ArrayList<>();
         for(Order order : orders){
@@ -133,6 +138,7 @@ public class OrderServiceImpl implements OrderService{
                     .build();
             elaborateOrders.add(elaborateOrder);
         }
+        log.info("Orders of user successfully fetched");
         return elaborateOrders;
     }
 }
