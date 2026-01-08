@@ -20,7 +20,7 @@ node {
     }
     stage('Build and Push Order-Service') {
         withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-            sh("${mvnCMD} clean install jib:build -DREPO_URL=${repourl} -DVERSION=${version} -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.passowrd=$DOCKER_PASS")
+            sh("${mvnCMD} clean install jib:build -DREPO_URL=${repourl} -DVERSION=${version} -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_PASS")
         }
     }
     stage('Deploy') {
