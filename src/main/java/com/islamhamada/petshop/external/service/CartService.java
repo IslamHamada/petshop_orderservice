@@ -15,9 +15,9 @@ import java.util.List;
 )
 public interface CartService {
 
-    @GetMapping("/{user_id}")
+    @GetMapping("/user/{user_id}")
     ResponseEntity<List<ElaborateCartItemDTO>> getCartByUser(@PathVariable long user_id);
 
-    @DeleteMapping("/{user_id}")
+    @DeleteMapping("/user/{user_id}")
     ResponseEntity<Long> emptyCartOfUser(@PathVariable long user_id);
 }
