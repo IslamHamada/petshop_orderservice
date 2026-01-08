@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 @FeignClient(
-        name = "CartService/cart"
+        name = "CartService",
+        path = "/cart"
 )
 public interface CartService {
 
