@@ -163,8 +163,8 @@
                         <image>eclipse-temurin:17-jdk</image>
                     </from>
                     <to>
-                        <image>${REPO_URL}/order-service</image>
-                        <tags>${VERSION}</tags>
+                        <image>${REPO_URL}</image>
+                        <tags>order-service-${VERSION}</tags>
                     </to>
                 </configuration>
             </plugin>
