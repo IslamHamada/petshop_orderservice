@@ -1,5 +1,5 @@
 node {
-    def repourl = "${REGISTRY_URL}/${PROJECT_ID}/${ARTIFACT_REGISTRY}"
+    def repourl = "islamhamada/petshop"
     def mvnHome = tool name: 'maven', type: 'maven'
     def mvnCMD = "${mvnHome}/bin/mvn"
     def version = sh(script: "date +%s", returnStdout: true).trim()
@@ -14,26 +14,20 @@ node {
     }
     stage('Checkout Order-Service'){
         checkout([$class: 'GitSCM',
-                  branches: [[name: '*/jenkins_gcp']],
+                  branches: [[name: '*/hetzner']],
                   userRemoteConfigs: [[credentialsId: 'git',
                                        url: 'https://github.com/IslamHamada/petshop_orderservice.git']]])
     }
     stage('Build and Push Order-Service') {
-        withCredentials([file(credentialsId: 'gcp', variable: 'GC_KEY')]) {
-            sh("gcloud auth activate-service-account --key-file=${GC_KEY}")
-            sh('gcloud auth configure-docker us-west4-docker.pkg.dev')
-            sh("${mvnCMD} clean install jib:build -DREPO_URL=${repourl} -DVERSION=${version}")
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+            sh("${mvnCMD} clean install jib:build -DREPO_URL=${repourl} -DVERSION=${version} -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.passowrd=$DOCKER_PASS")
         }
     }
     stage('Deploy') {
         sh("sed -i 's|IMAGE_URL|${repourl}|g' k8s/deployment.yaml")
-        sh("sed -i 's|TAG|${version}|g' k8s/deployment.yaml")
-        step([$class: 'KubernetesEngineBuilder',
-              projectId: env.PROJECT_ID,
-              clusterName: env.CLUSTER,
-              location: env.ZONE,
-              manifestPattern: 'k8s/deployment.yaml',
-              credentialsId: env.PROJECT_ID,
-              verifyDeployments: true])
+        sh("sed -i 's|TAG|order-service-${version}|g' k8s/deployment.yaml")
+        withCredentials([file(credentialsId: 'k3s-kubeconfig', variable: 'KUBECONFIG_FILE')]) {
+            sh("kubectl --kubeconfig=${KUBECONFIG_FILE} apply -f k8s/deployment.yaml")
+        }
     }
 }
