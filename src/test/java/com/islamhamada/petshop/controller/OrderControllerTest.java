@@ -54,7 +54,11 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest({"server.port=0"})
+@SpringBootTest({
+        "server.port=0",
+        "product-service-svc.url=http://localhost:9090",
+        "cart-service-svc.url=http://localhost:9090"
+})
 @EnableConfigurationProperties
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = {OrderServiceConfig.class})

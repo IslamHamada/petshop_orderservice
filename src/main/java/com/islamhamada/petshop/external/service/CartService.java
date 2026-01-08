@@ -11,6 +11,7 @@ import java.util.List;
 
 @FeignClient(
         name = "cart-service-svc",
+        url = "${cart-service-svc.url:http://cart-service-svc}",
         path = "/cart"
 )
 public interface CartService {
