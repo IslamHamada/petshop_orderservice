@@ -5,6 +5,7 @@ import com.islamhamada.petshop.model.OrderCartRequest;
 import com.islamhamada.petshop.service.OrderService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,14 +23,14 @@ public class OrderController {
 
     @PreAuthorize("hasAnyRole('Customer')")
     @PostMapping("/{user_id}")
-    public ResponseEntity<ElaborateOrderDTO> orderUserCart(@Positive @PathVariable long user_id, @Valid @RequestBody OrderCartRequest request){
+    public ResponseEntity<ElaborateOrderDTO> orderUserCart(@PositiveOrZero @PathVariable long user_id, @Valid @RequestBody OrderCartRequest request){
         ElaborateOrderDTO elaborateOrder = orderService.orderUserCart(user_id, request);
         return new ResponseEntity<>(elaborateOrder, HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('Customer')")
     @GetMapping("/{user_id}")
-    public ResponseEntity<List<ElaborateOrderDTO>> getOrders(@Positive @PathVariable long user_id) {
+    public ResponseEntity<List<ElaborateOrderDTO>> getOrders(@PositiveOrZero @PathVariable long user_id) {
         List<ElaborateOrderDTO> elaborateOrders = orderService.getOrders(user_id);
         return new ResponseEntity<>(elaborateOrders, HttpStatus.OK);
     }
