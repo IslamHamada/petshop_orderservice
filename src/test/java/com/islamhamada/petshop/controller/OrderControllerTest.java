@@ -123,6 +123,7 @@ class OrderControllerTest {
         wireMockServer.stubFor(WireMock.get("/cart/user/1")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                         .withBody(StreamUtils.copyToString(
                                 OrderControllerTest.class.getClassLoader()
                                         .getResourceAsStream("mock/GetCartByUser.json"),
