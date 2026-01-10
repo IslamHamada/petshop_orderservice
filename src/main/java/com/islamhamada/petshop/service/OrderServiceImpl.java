@@ -2,6 +2,7 @@ package com.islamhamada.petshop.service;
 
 import com.islamhamada.petshop.contracts.dto.ElaborateCartItemDTO;
 import com.islamhamada.petshop.contracts.dto.ProductDTO;
+import com.islamhamada.petshop.contracts.model.ReduceQuantityRequest;
 import com.islamhamada.petshop.entity.Order;
 import com.islamhamada.petshop.entity.OrderItem;
 import com.islamhamada.petshop.exception.OrderServiceException;
@@ -92,6 +93,9 @@ public class OrderServiceImpl implements OrderService{
             OrderItem item = orderItemRepository.save(o);
             log.info("Saved individual order item with id: " + item.getId());
         });
+        orderItems.forEach(o ->
+                productService.reduceProductQuntity(o.getProductId(), new ReduceQuantityRequest(o.getCount()))
+        );
         ElaborateOrderDTO elaborateOrder = ElaborateOrderDTO.builder()
                 .time(order.getTime())
                 .elaborateOrderItems(elaborateOrderItems)
