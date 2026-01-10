@@ -10,8 +10,8 @@
 
   {
     "product_id": 2,
-    "product_name": "name2",
-    "product_price": 5.2,
+    "product_name": "product2",
+    "product_price": 7,
     "product_image": "image2",
     "cart_item_id": 12,
     "cart_item_count": 4
