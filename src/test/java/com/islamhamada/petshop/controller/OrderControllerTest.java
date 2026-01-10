@@ -174,7 +174,7 @@ class OrderControllerTest {
         void success() throws Exception{
             long userId = 1;
             OrderCartRequest request = getMockOrderCartRequest();
-            MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
+            MvcResult mvcResult = mockMvc.perform(post("/order/" + userId)
                             .with(jwt().authorities(neededRole))
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .content(objectMapper.writeValueAsString(request)))
@@ -197,7 +197,7 @@ class OrderControllerTest {
         void failure_not_enough_quantity() throws Exception {
             long userId = 2;
             OrderCartRequest request = getMockOrderCartRequest();
-            MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
+            MvcResult mvcResult = mockMvc.perform(post("/order/" + userId)
                     .with(jwt().authorities(neededRole))
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(request)))
@@ -213,7 +213,7 @@ class OrderControllerTest {
         void failure_empty_cart() throws Exception {
             long userId = 999;
             OrderCartRequest request = getMockOrderCartRequest();
-            MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
+            MvcResult mvcResult = mockMvc.perform(post("/order/" + userId)
                     .with(jwt().authorities(neededRole))
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .content(objectMapper.writeValueAsString(request)))
