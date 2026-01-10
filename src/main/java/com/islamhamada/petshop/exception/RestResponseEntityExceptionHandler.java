@@ -1,5 +1,6 @@
 package com.islamhamada.petshop.exception;
 
+import com.islamhamada.petshop.contracts.exception.FeignClientException;
 import com.islamhamada.petshop.contracts.model.RestExceptionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,6 +12,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(OrderServiceException.class)
     public ResponseEntity<RestExceptionResponse> handleOrderServiceException(OrderServiceException exception){
+        return new ResponseEntity<>(RestExceptionResponse.builder()
+                .error_code(exception.getError_code())
+                .error_message(exception.getMessage())
+                .build(), exception.getHttpStatus());
+    }
+
+    @ExceptionHandler(FeignClientException.class)
+    public ResponseEntity<RestExceptionResponse> handleOrderServiceException(FeignClientException exception){
         return new ResponseEntity<>(RestExceptionResponse.builder()
                 .error_code(exception.getError_code())
                 .error_message(exception.getMessage())
