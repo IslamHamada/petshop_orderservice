@@ -128,7 +128,21 @@ class OrderControllerTest {
                                         .getResourceAsStream("mock/GetCartByUser.json"),
                                 Charset.defaultCharset()
                         ))));
-        wireMockServer.stubFor(WireMock.get("/cart/999")
+        wireMockServer.stubFor(WireMock.get("/cart/user/2")
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody(StreamUtils.copyToString(
+                                OrderControllerTest.class.getClassLoader()
+                                        .getResourceAsStream("mock/GetCartByUser2.json"),
+                                Charset.defaultCharset()
+                        ))));
+        wireMockServer.stubFor(WireMock.get("/cart/user/999")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                        .withBody("[]")
+                        .withStatus(HttpStatus.OK.value())));
+    }
 
     public void emptyCartOfUser() {
         wireMockServer.stubFor(WireMock.delete("/cart/user/1")
