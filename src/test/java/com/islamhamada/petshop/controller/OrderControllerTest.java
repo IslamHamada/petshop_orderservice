@@ -98,6 +98,7 @@ class OrderControllerTest {
         getProductById();
         getCartByUser();
         emptyCartOfUser();
+        reduceProductQuntity();
     }
 
     private void getProductById() throws IOException {
@@ -152,6 +153,16 @@ class OrderControllerTest {
 
     public void emptyCartOfUser() {
         wireMockServer.stubFor(WireMock.delete("/cart/user/1")
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())));
+    }
+
+    private void reduceProductQuntity() {
+        wireMockServer.stubFor(WireMock.put("/product/1")
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.OK.value())));
+
+        wireMockServer.stubFor(WireMock.put("/product/2")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())));
     }
