@@ -171,8 +171,8 @@ class OrderControllerTest {
     public class orderUserCart{
 
         @Test
-        public void success() throws Exception{
-            long user_id = 1;
+        void success() throws Exception{
+            long userId = 1;
             OrderCartRequest request = getMockOrderCartRequest();
             MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
                             .with(jwt().authorities(neededRole))
@@ -194,8 +194,8 @@ class OrderControllerTest {
         }
 
         @Test
-        public void failure_not_enough_quantity() throws Exception {
-            long user_id = 2;
+        void failure_not_enough_quantity() throws Exception {
+            long userId = 2;
             OrderCartRequest request = getMockOrderCartRequest();
             MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
                     .with(jwt().authorities(neededRole))
@@ -210,8 +210,8 @@ class OrderControllerTest {
         }
 
         @Test
-        public void failure_empty_cart() throws Exception {
-            long user_id = 999;
+        void failure_empty_cart() throws Exception {
+            long userId = 999;
             OrderCartRequest request = getMockOrderCartRequest();
             MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
                     .with(jwt().authorities(neededRole))
