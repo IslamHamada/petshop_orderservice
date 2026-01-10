@@ -90,7 +90,7 @@ public class OrderServiceImpl implements OrderService{
         orderItems.forEach(o -> o.setOrderId(order_id));
         orderItems.forEach(o -> {
             OrderItem item = orderItemRepository.save(o);
-            log.info("Saved individual cart item with id: " + item.getId());
+            log.info("Saved individual order item with id: " + item.getId());
         });
         ElaborateOrderDTO elaborateOrder = ElaborateOrderDTO.builder()
                 .time(order.getTime())
