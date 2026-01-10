@@ -124,7 +124,7 @@ class OrderControllerTest {
     }
 
     private void getCartByUser() throws IOException {
-        wireMockServer.stubFor(WireMock.get("/cart/1")
+        wireMockServer.stubFor(WireMock.get("/cart/user/1")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withBody(StreamUtils.copyToString(
