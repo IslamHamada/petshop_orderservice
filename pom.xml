@@ -182,6 +182,7 @@
 						<exclude>com/islamhamada/petshop/exception/*</exclude>
 						<exclude>com/islamhamada/petshop/entity/*</exclude>
 						<exclude>com/islamhamada/petshop/security/*</exclude>
+						<exclude>com/islamhamada/petshop/external/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
