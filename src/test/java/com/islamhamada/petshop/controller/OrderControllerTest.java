@@ -96,7 +96,7 @@ class OrderControllerTest {
         orderItemRepository.deleteAll();
         getProductById();
         getCartByUser();
-        
+        emptyCartOfUser();
     }
 
     private void getProductById() throws IOException {
@@ -133,8 +133,11 @@ class OrderControllerTest {
                                 Charset.defaultCharset()
                         ))));
         wireMockServer.stubFor(WireMock.get("/cart/999")
+
+    public void emptyCartOfUser() {
+        wireMockServer.stubFor(WireMock.delete("/cart/user/1")
                 .willReturn(aResponse()
-                        .withStatus(HttpStatus.NOT_FOUND.value())));
+                        .withStatus(HttpStatus.OK.value())));
     }
 
     @Nested
