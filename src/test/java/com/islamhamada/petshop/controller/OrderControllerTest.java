@@ -12,6 +12,7 @@ import com.islamhamada.petshop.OrderServiceConfig;
 import com.islamhamada.petshop.contracts.dto.ElaborateCartItemDTO;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderDTO;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderItemDTO;
+import com.islamhamada.petshop.contracts.model.RestExceptionResponse;
 import com.islamhamada.petshop.entity.Order;
 import com.islamhamada.petshop.entity.OrderItem;
 import com.islamhamada.petshop.model.OrderCartRequest;
@@ -159,8 +160,58 @@ class OrderControllerTest {
     public class orderUserCart{
 
         @Test
-        public void success() {
+        public void success() throws Exception{
+            long user_id = 1;
+            OrderCartRequest request = getMockOrderCartRequest();
+            MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
+                            .with(jwt().authorities(neededRole))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andReturn();
+            String response = mvcResult.getResponse().getContentAsString();
+            ElaborateOrderDTO elaborateOrderDTO = objectMapper.readValue(response, ElaborateOrderDTO.class);
 
+            assertEquals(request.getFirstName(), elaborateOrderDTO.getFirstName());
+            assertEquals(request.getLastName(), elaborateOrderDTO.getLastName());
+            assertEquals(request.getCountry(), elaborateOrderDTO.getCountry());
+            assertEquals(request.getCity(), elaborateOrderDTO.getCity());
+            assertEquals(request.getStreet(), elaborateOrderDTO.getStreet());
+            assertEquals(request.getHouseNumber(), elaborateOrderDTO.getHouseNumber());
+            assertEquals(request.getPostalCode(), elaborateOrderDTO.getPostalCode());
+            assertEquals(request.getPhoneNumber(), elaborateOrderDTO.getPhoneNumber());
+        }
+
+        @Test
+        public void failure_not_enough_quantity() throws Exception {
+            long user_id = 2;
+            OrderCartRequest request = getMockOrderCartRequest();
+            MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
+                    .with(jwt().authorities(neededRole))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isConflict())
+                    .andReturn();
+            String response = mvcResult.getResponse().getContentAsString();
+            RestExceptionResponse exceptionResponse = objectMapper.readValue(response, RestExceptionResponse.class);
+            assertEquals("ORDER_CANNOT_BE_ISSUED", exceptionResponse.getError_code());
+            assertEquals("Not enough product2 in stock", exceptionResponse.getError_message());
+        }
+
+        @Test
+        public void failure_empty_cart() throws Exception {
+            long user_id = 999;
+            OrderCartRequest request = getMockOrderCartRequest();
+            MvcResult mvcResult = mockMvc.perform(post("/order/" + user_id)
+                    .with(jwt().authorities(neededRole))
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isConflict())
+                    .andReturn();
+            String response = mvcResult.getResponse().getContentAsString();
+            RestExceptionResponse exceptionResponse = objectMapper.readValue(response, RestExceptionResponse.class);
+            assertEquals("ORDER_CANNOT_BE_ISSUED", exceptionResponse.getError_code());
+            assertEquals("Can't issue an order with an empty cart", exceptionResponse.getError_message());
         }
 
         @Test
