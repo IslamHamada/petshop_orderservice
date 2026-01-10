@@ -22,5 +22,5 @@ public class OrderItem {
 
     private long productId;
 
-    private long count;
+    private int count;
 }
