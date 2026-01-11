@@ -18,5 +18,5 @@ public interface ProductService {
     ResponseEntity<ProductDTO> getProductById(@PathVariable("id") long id);
 
     @PutMapping("/{id}")
-    ResponseEntity<ProductDTO> reduceProductQuntity(@PathVariable("id") long id, @RequestBody ReduceQuantityRequest request);
+    ResponseEntity<Integer> reduceProductQuntity(@PathVariable("id") long id, @RequestBody ReduceQuantityRequest request);
 }
