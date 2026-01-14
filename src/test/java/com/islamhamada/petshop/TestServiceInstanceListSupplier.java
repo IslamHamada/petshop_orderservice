@@ -26,14 +26,14 @@ public class TestServiceInstanceListSupplier implements ServiceInstanceListSuppl
         List<ServiceInstance> list
                 = new ArrayList<>();
         list.add(new DefaultServiceInstance(
-                "PRODUCT-SERVICE",
+                "ProductService",
                 "ProductService",
                 "localhost",
                 port,
                 false
         ));
         list.add(new DefaultServiceInstance(
-                "CART-SERVICE",
+                "CartService",
                 "CartService",
                 "localhost",
                 port,
