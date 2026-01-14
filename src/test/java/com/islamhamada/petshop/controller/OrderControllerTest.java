@@ -63,7 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableConfigurationProperties
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = {OrderServiceConfig.class})
-class OrderControllerTest {
+public class OrderControllerTest {
 
     @Autowired
     OrderRepository orderRepository;
@@ -75,11 +75,11 @@ class OrderControllerTest {
     MockMvc mockMvc;
 
     @RegisterExtension
-    static WireMockExtension wireMockServer = WireMockExtension
+    public static WireMockExtension wireMockServer = WireMockExtension
             .newInstance()
             .options(WireMockConfiguration
                     .wireMockConfig()
-                    .port(9090))
+                    .dynamicHttpsPort())
             .build();
 
     ObjectMapper objectMapper = new ObjectMapper()
