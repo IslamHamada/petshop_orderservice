@@ -4,12 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.common.DateTimeUnit;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.islamhamada.petshop.OrderServiceConfig;
-import com.islamhamada.petshop.contracts.dto.ElaborateCartItemDTO;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderDTO;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderItemDTO;
 import com.islamhamada.petshop.contracts.model.RestExceptionResponse;
@@ -18,11 +16,9 @@ import com.islamhamada.petshop.entity.OrderItem;
 import com.islamhamada.petshop.model.OrderCartRequest;
 import com.islamhamada.petshop.repository.OrderItemRepository;
 import com.islamhamada.petshop.repository.OrderRepository;
-import org.h2.util.DateTimeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -43,25 +39,16 @@ import org.springframework.util.StreamUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.DATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest({
-        "server.port=0",
-        "product-service-svc.url=http://localhost:9090",
-        "cart-service-svc.url=http://localhost:9090"
-})
+@SpringBootTest({"server.port=0",})
 @EnableConfigurationProperties
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = {OrderServiceConfig.class})
@@ -76,17 +63,17 @@ public class OrderControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @RegisterExtension
-    public static WireMockExtension wireMockServer = WireMockExtension
-            .newInstance()
-            .options(WireMockConfiguration
+    public static WireMockServer wireMockServer = new WireMockServer(WireMockConfiguration
                     .wireMockConfig()
-                    .dynamicHttpsPort())
-            .build();
+                    .dynamicPort());
+
+    public OrderControllerTest() {
+        wireMockServer.start();
+    }
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        String wireMockUrl = "http://localhost:" + wireMockServer.getPort();
+        String wireMockUrl = "http://localhost:" + wireMockServer.port();
         registry.add("product-service-svc.url", () -> wireMockUrl);
         registry.add("cart-service-svc.url", () -> wireMockUrl);
     }
