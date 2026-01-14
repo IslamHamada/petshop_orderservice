@@ -34,6 +34,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StreamUtils;
@@ -81,6 +83,13 @@ public class OrderControllerTest {
                     .wireMockConfig()
                     .dynamicHttpsPort())
             .build();
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        String wireMockUrl = "http://localhost:" + wireMockServer.getPort();
+        registry.add("product-service-svc.url", () -> wireMockUrl);
+        registry.add("cart-service-svc.url", () -> wireMockUrl);
+    }
 
     ObjectMapper objectMapper = new ObjectMapper()
             .findAndRegisterModules()
