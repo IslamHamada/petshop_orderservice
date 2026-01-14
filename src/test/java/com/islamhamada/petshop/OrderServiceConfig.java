@@ -11,5 +11,6 @@ public class OrderServiceConfig {
     @Bean
     public ServiceInstanceListSupplier supplier() {
         return new TestServiceInstanceListSupplier(OrderControllerTest.wireMockServer.getPort());
+        return new TestServiceInstanceListSupplier(OrderControllerTest.wireMockServer.port());
     }
 }
