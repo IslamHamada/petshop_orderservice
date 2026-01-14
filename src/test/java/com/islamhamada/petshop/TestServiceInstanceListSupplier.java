@@ -9,6 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestServiceInstanceListSupplier implements ServiceInstanceListSupplier {
+
+    private final int port;
+
+    public TestServiceInstanceListSupplier(int port) {
+        this.port = port;
+    }
+
     @Override
     public String getServiceId() {
         return "";
@@ -22,14 +29,14 @@ public class TestServiceInstanceListSupplier implements ServiceInstanceListSuppl
                 "PRODUCT-SERVICE",
                 "ProductService",
                 "localhost",
-                9090,
+                port,
                 false
         ));
         list.add(new DefaultServiceInstance(
                 "CART-SERVICE",
                 "CartService",
                 "localhost",
-                9090,
+                port,
                 false
         ));
         return Flux.just(list);
