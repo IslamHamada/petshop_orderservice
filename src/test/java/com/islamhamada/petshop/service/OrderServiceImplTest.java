@@ -235,6 +235,8 @@ class OrderServiceImplTest {
             int user_id = 1;
 
             List<Order> orderList = getOrderList(user_id);
+            orderList.get(0).setOrderItems(getOrderItemList1());
+            orderList.get(1).setOrderItems(getOrderItemList2());
             when(orderRepository.findByUserIdOrderByTimeDesc(user_id))
                     .thenReturn(orderList);
             List<List<OrderItem>> orderItemsList = new ArrayList<>();
@@ -326,33 +328,36 @@ class OrderServiceImplTest {
         }
 
         List<OrderItem> getOrderItemList1() {
+            List<Order> orders = getOrderList(1);
+
             OrderItem orderItem1 = OrderItem.builder()
                     .id(1)
                     .count(1)
                     .productId(1)
-                    .orderId(1)
+                    .order(orders.get(0))
                     .build();
             OrderItem orderItem2 = OrderItem.builder()
                     .id(2)
                     .count(2)
                     .productId(2)
-                    .orderId(1)
+                    .order(orders.get(1))
                     .build();
             return List.of(orderItem1, orderItem2);
         }
 
         List<OrderItem> getOrderItemList2() {
+            List<Order> orders = getOrderList(2);
             OrderItem orderItem1 = OrderItem.builder()
                     .id(3)
                     .count(3)
                     .productId(3)
-                    .orderId(2)
+                    .order(orders.get(0))
                     .build();
             OrderItem orderItem2 = OrderItem.builder()
                     .id(4)
                     .count(4)
                     .productId(4)
-                    .orderId(2)
+                    .order(orders.get(1))
                     .build();
             return List.of(orderItem1, orderItem2);
         }
