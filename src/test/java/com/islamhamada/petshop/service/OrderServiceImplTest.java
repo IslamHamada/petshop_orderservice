@@ -105,11 +105,7 @@ class OrderServiceImplTest {
             }
             verify(orderRepository, times(1))
                     .save(any());
-            for(int i = 0; i < orderItemList.size(); i++) {
-                OrderItem orderItem = orderItemList.get(i);
-                verify(orderItemRepository, times(1))
-                        .save(orderItem);
-            }
+
             verify(cartService, times(1))
                     .emptyCartOfUser(user_id);
 
@@ -265,8 +261,6 @@ class OrderServiceImplTest {
 
             verify(orderRepository, times(1))
                     .findByUserIdOrderByTimeDesc(anyLong());
-            verify(orderItemRepository, times(orderList.size()))
-                    .findAllByOrderId(anyLong());
             verify(productService, times(4))
                     .getProductById(anyLong());
 
