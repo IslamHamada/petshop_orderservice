@@ -321,12 +321,12 @@ public class OrderControllerTest {
             OrderItem orderItem = orderItemRepository.save(OrderItem.builder()
                     .count(3)
                     .productId(1)
-                    .orderId(order1.getId())
+                    .order(order1)
                     .build());
             OrderItem orderItem2 = orderItemRepository.save(OrderItem.builder()
                     .count(4)
                     .productId(2)
-                    .orderId(order1.getId())
+                    .order(order1)
                     .build());
 
             Order order2 = orderRepository.save(Order.builder()
@@ -345,7 +345,7 @@ public class OrderControllerTest {
             OrderItem orderItem3 = orderItemRepository.save(OrderItem.builder()
                     .count(10)
                     .productId(1)
-                    .orderId(order2.getId())
+                    .order(order2)
                     .build());
 
             MvcResult mvcResult = mockMvc.perform(get("/order/" + user_id)
@@ -372,11 +372,11 @@ public class OrderControllerTest {
             ElaborateOrderItemDTO orderItemDTO = elaborateOrderItemDTO.get(0);
             assertEquals(orderItemDTO.getCount(), orderItem.getCount());
             assertEquals(orderItemDTO.getProduct_id(), orderItem.getProductId());
-            assertEquals(order1.getId(), orderItem.getOrderId());
+            assertEquals(order1.getId(), orderItem.getOrder().getId());
             ElaborateOrderItemDTO orderItemDTO2 = elaborateOrderItemDTO.get(1);
             assertEquals(orderItemDTO2.getCount(), orderItem2.getCount());
             assertEquals(orderItemDTO2.getProduct_id(), orderItem2.getProductId());
-            assertEquals(order1.getId(), orderItem2.getOrderId());
+            assertEquals(order1.getId(), orderItem2.getOrder().getId());
 
             ElaborateOrderDTO elaborateOrder2 = elaborateOrderDTOs.get(0);
             assertEquals(elaborateOrder2.getFirstName(), order2.getFirstName());
@@ -394,7 +394,7 @@ public class OrderControllerTest {
             ElaborateOrderItemDTO orderItemDTO3 = elaborateOrderItemDTOs.get(0);
             assertEquals(orderItemDTO3.getCount(), orderItem3.getCount());
             assertEquals(orderItemDTO3.getProduct_id(), orderItem3.getProductId());
-            assertEquals(order2.getId(), orderItem3.getOrderId());
+            assertEquals(order2.getId(), orderItem3.getOrder().getId());
         }
 
         @Test

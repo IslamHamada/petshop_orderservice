@@ -1,6 +1,7 @@
 package com.islamhamada.petshop.entity;
 
 import java.time.Instant;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,9 @@ public class Order {
     @Id
     @GeneratedValue
     private long id;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems;
 
     @Column(name = "user_id")
     private long userId;

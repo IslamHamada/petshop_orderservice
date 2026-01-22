@@ -87,12 +87,8 @@ public class OrderServiceImpl implements OrderService{
                 .mapToDouble(o -> o.getPrice() * o.getCount())
                 .sum();
         order.setPrice(price);
-        long order_id = orderRepository.save(order).getId();
-        orderItems.forEach(o -> o.setOrderId(order_id));
-        orderItems.forEach(o -> {
-            OrderItem item = orderItemRepository.save(o);
-            log.info("Saved individual order item with id: " + item.getId());
-        });
+        orderRepository.save(order);
+        log.info("Saved order and its items successfully");
         orderItems.forEach(o ->
                 productService.reduceProductQuntity(o.getProductId(), new ReduceQuantityRequest(o.getCount()))
         );
@@ -123,7 +119,7 @@ public class OrderServiceImpl implements OrderService{
         for(Order order : orders){
             List<ElaborateOrderItemDTO> elaborateOrderItems = new ArrayList<>();
             log.info("Getting all items of order of id: " + order.getId());
-            List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
+            List<OrderItem> orderItems = order.getOrderItems();
             for(OrderItem orderItem : orderItems){
                 log.info("Calling product service to get product info of product with id: " + orderItem.getProductId());
                 ProductDTO product = productService.getProductById(orderItem.getProductId()).getBody();
