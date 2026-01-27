@@ -19,12 +19,12 @@ public class CartServiceFallbackFactory implements FallbackFactory<CartService> 
         log.error(cause);
         return new CartService() {
             @Override
-            public ResponseEntity<List<ElaborateCartItemDTO>> getCartByUser(long user_id) {
+            public ResponseEntity<List<ElaborateCartItemDTO>> getCartByUser(long userId) {
                 throw new ResponseStatusException(HttpStatus.FAILED_DEPENDENCY, "Cart service is down!", cause);
             }
 
             @Override
-            public ResponseEntity<Long> emptyCartOfUser(long user_id) {
+            public ResponseEntity<Long> emptyCartOfUser(long userId) {
                 throw new ResponseStatusException(HttpStatus.FAILED_DEPENDENCY, "Cart service is down!", cause);
             }
         };
