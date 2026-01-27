@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.http.Fault;
 import com.islamhamada.petshop.OrderServiceConfig;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderDTO;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderItemDTO;
@@ -291,6 +292,38 @@ public class OrderControllerTest {
             return list;
         }
 
+        @Test
+        void failure_cart_service_down() throws Exception {
+            cartService.stubFor(WireMock.any(WireMock.anyUrl())
+                    .willReturn(aResponse()
+                            .withFault(Fault.CONNECTION_RESET_BY_PEER)));
+            long userId = 1;
+            OrderCartRequest request = getMockOrderCartRequest();
+            mockMvc.perform(post("/order/" + userId)
+                            .with(jwt().authorities(neededRole))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isFailedDependency())
+                .andReturn();
+            cartService.resetMappings();
+        }
+
+        @Test
+        void failure_product_service_down() throws Exception {
+            productService.stubFor(WireMock.any(WireMock.anyUrl())
+                    .willReturn(aResponse()
+                            .withFault(Fault.CONNECTION_RESET_BY_PEER)));
+            long userId = 1;
+            OrderCartRequest request = getMockOrderCartRequest();
+            mockMvc.perform(post("/order/" + userId)
+                            .with(jwt().authorities(neededRole))
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isFailedDependency())
+                    .andReturn();
+            productService.resetMappings();
+        }
+
         private static OrderCartRequest getMockOrderCartRequest() {
             return OrderCartRequest.builder()
                     .firstName("firstName")
@@ -420,6 +453,41 @@ public class OrderControllerTest {
                     .with(jwt().authorities(notNeededRole)))
                     .andExpect(status().isBadRequest())
                     .andReturn();
+        }
+
+        @Test
+        void failure_product_service_down() throws Exception {
+            productService.stubFor(WireMock.any(WireMock.anyUrl())
+                    .willReturn(aResponse()
+                            .withFault(Fault.CONNECTION_RESET_BY_PEER)));
+            long userId = 1;
+            Order order = Order.builder()
+                    .price(5)
+                    .time(Instant.now())
+                    .firstName("firstName1")
+                    .lastName("lastName1")
+                    .country("country1")
+                    .city("city1")
+                    .street("street1")
+                    .houseNumber("12")
+                    .postalCode("1234")
+                    .userId(userId)
+                    .build();
+
+            OrderItem orderItem = OrderItem.builder()
+                    .count(3)
+                    .productId(1)
+                    .order(order)
+                    .build();
+            order.setOrderItems(List.of(orderItem));
+
+            orderRepository.save(order);
+
+            mockMvc.perform(get("/order/" + userId)
+                            .with(jwt().authorities(neededRole)))
+                    .andExpect(status().isFailedDependency())
+                    .andReturn();
+            productService.resetMappings();
         }
     }
 }
