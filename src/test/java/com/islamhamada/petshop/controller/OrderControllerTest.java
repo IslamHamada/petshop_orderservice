@@ -97,6 +97,7 @@ public class OrderControllerTest {
     @BeforeEach
     public void setup() throws IOException {
         orderItemRepository.deleteAll();
+        orderRepository.deleteAll();
         getProductById();
         getCartByUser();
         emptyCartOfUser();
