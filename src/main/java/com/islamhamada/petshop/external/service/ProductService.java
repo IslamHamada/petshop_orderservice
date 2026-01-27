@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "ProductService",
-        path = "/product"
+        path = "/product",
+        fallbackFactory = ProductServiceFallbackFactory.class
 )
 public interface ProductService {
     @GetMapping("/{id}")
