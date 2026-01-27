@@ -63,19 +63,25 @@ public class OrderControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    public static WireMockServer wireMockServer = new WireMockServer(WireMockConfiguration
+    public static WireMockServer cartService = new WireMockServer(WireMockConfiguration
                     .wireMockConfig()
                     .dynamicPort());
 
+    public static WireMockServer productService = new WireMockServer(WireMockConfiguration
+            .wireMockConfig()
+            .dynamicPort());
+
     public OrderControllerTest() {
-        wireMockServer.start();
+        cartService.start();
+        productService.start();
     }
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        String wireMockUrl = "http://localhost:" + wireMockServer.port();
-        registry.add("product-service-svc.url", () -> wireMockUrl);
-        registry.add("cart-service-svc.url", () -> wireMockUrl);
+        String cartServiceUrl = "http://localhost:" + cartService.port();
+        String productServiceUrl = "http://localhost:" + productService.port();
+        registry.add("cart-service-svc.url", () -> cartServiceUrl);
+        registry.add("product-service-svc.url", () -> productServiceUrl);
     }
 
     ObjectMapper objectMapper = new ObjectMapper()
@@ -98,7 +104,7 @@ public class OrderControllerTest {
     }
 
     private void getProductById() throws IOException {
-        wireMockServer.stubFor(WireMock.get("/product/1")
+        productService.stubFor(WireMock.get("/product/1")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -107,7 +113,7 @@ public class OrderControllerTest {
                                         .getResourceAsStream("mock/GetProduct1.json"),
                                 Charset.defaultCharset()
                         ))));
-        wireMockServer.stubFor(WireMock.get("/product/2")
+        productService.stubFor(WireMock.get("/product/2")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -116,13 +122,13 @@ public class OrderControllerTest {
                                         .getResourceAsStream("mock/GetProduct2.json"),
                                 Charset.defaultCharset()
                         ))));
-        wireMockServer.stubFor(WireMock.get("/product/999")
+        productService.stubFor(WireMock.get("/product/999")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.NOT_FOUND.value())));
     }
 
     private void getCartByUser() throws IOException {
-        wireMockServer.stubFor(WireMock.get("/cart/user/1")
+        cartService.stubFor(WireMock.get("/cart/user/1")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -131,7 +137,7 @@ public class OrderControllerTest {
                                         .getResourceAsStream("mock/GetCartByUser.json"),
                                 Charset.defaultCharset()
                         ))));
-        wireMockServer.stubFor(WireMock.get("/cart/user/2")
+        cartService.stubFor(WireMock.get("/cart/user/2")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -140,7 +146,7 @@ public class OrderControllerTest {
                                         .getResourceAsStream("mock/GetCartByUser2.json"),
                                 Charset.defaultCharset()
                         ))));
-        wireMockServer.stubFor(WireMock.get("/cart/user/999")
+        cartService.stubFor(WireMock.get("/cart/user/999")
                 .willReturn(aResponse()
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                         .withBody("[]")
@@ -148,17 +154,17 @@ public class OrderControllerTest {
     }
 
     public void emptyCartOfUser() {
-        wireMockServer.stubFor(WireMock.delete("/cart/user/1")
+        cartService.stubFor(WireMock.delete("/cart/user/1")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())));
     }
 
     private void reduceProductQuntity() {
-        wireMockServer.stubFor(WireMock.put("/product/1")
+        productService.stubFor(WireMock.put("/product/1")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())));
 
-        wireMockServer.stubFor(WireMock.put("/product/2")
+        productService.stubFor(WireMock.put("/product/2")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())));
     }
