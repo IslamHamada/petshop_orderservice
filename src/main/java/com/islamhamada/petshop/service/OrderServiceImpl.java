@@ -81,12 +81,14 @@ public class OrderServiceImpl implements OrderService{
                             .product_id(product.getId())
                             .build();
                     elaborateOrderItems.add(elaborateOrderItem);
+                    orderItem.setOrder(order);
                 }
         );
         double price = elaborateOrderItems.stream()
                 .mapToDouble(o -> o.getPrice() * o.getCount())
                 .sum();
         order.setPrice(price);
+        order.setOrderItems(orderItems);
         orderRepository.save(order);
         log.info("Saved order and its items successfully");
         orderItems.forEach(o ->
