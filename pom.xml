@@ -186,7 +186,7 @@
 						<exclude>com/islamhamada/petshop/exception/*</exclude>
 						<exclude>com/islamhamada/petshop/entity/*</exclude>
 						<exclude>com/islamhamada/petshop/security/*</exclude>
-						<exclude>com/islamhamada/petshop/external/*</exclude>
+						<exclude>com/islamhamada/petshop/external/intercept/*</exclude>
 					</excludes>
 				</configuration>
 				<executions>
