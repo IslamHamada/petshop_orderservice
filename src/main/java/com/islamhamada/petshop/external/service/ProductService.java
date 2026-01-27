@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         name = "product-service-svc",
         url = "${product-service-svc.url:http://product-service-svc}",
         path = "/product"
+        fallbackFactory = ProductServiceFallbackFactory.class
 )
 public interface ProductService {
     @GetMapping("/{id}")
