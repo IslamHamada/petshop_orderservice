@@ -17,6 +17,10 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://dev-atfpp36qj24tzo8l.us.auth0.com/
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
 
 server:
   port: 8084
