@@ -1,5 +1,6 @@
 package com.islamhamada.petshop.entity;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Order {
 
     private Instant time;
 
-    private double price;
+    private BigDecimal price;
 
     @Column(name = "first_name")
     private String firstName;

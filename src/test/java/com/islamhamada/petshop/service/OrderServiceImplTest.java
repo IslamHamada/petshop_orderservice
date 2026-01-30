@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,7 @@ class OrderServiceImplTest {
 
             List<OrderItem> orderItemList = new ArrayList<>();
             List<ElaborateOrderItemDTO> elaborateOrderItemDTOList = new ArrayList<>();
-            double price = 0;
+            BigDecimal price = BigDecimal.valueOf(0);
             for(int i = 0; i < productDTOList.size(); i++) {
                 ProductDTO productDTO = productDTOList.get(i);
                 ElaborateCartItemDTO elaborateCartItemDTO = elaborateCartItemDTOList.get(i);
@@ -84,7 +85,10 @@ class OrderServiceImplTest {
                         .product_id(productDTO.getId())
                         .price(productDTO.getPrice())
                         .build());
-                price += elaborateCartItemDTO.getProduct_price() * elaborateCartItemDTO.getCart_item_count();
+                price = price.add(elaborateCartItemDTO.getProduct_price().multiply(
+                            BigDecimal.valueOf(elaborateCartItemDTO.getCart_item_count())
+                        )
+                );
             }
 
             when(orderRepository.save(any()))
@@ -201,7 +205,7 @@ class OrderServiceImplTest {
                         .cart_item_id(i)
                         .product_name(productDTO.getName())
                         .cart_item_count(productDTO.getQuantity() - 1)
-                        .product_price(i)
+                        .product_price(BigDecimal.valueOf(i))
                         .product_id(productDTO.getId())
                         .product_price(productDTO.getPrice())
                         .product_name(productDTO.getName())
@@ -367,7 +371,7 @@ class OrderServiceImplTest {
         List<ProductDTO> productDTOList = new ArrayList<>();
         productDTOList.add(ProductDTO.builder()
                 .id(1)
-                .price(1)
+                .price(BigDecimal.valueOf(1))
                 .image("image1")
                 .name("name1")
                 .description("description1")
@@ -377,7 +381,7 @@ class OrderServiceImplTest {
                 .build());
         productDTOList.add(ProductDTO.builder()
                 .id(2)
-                .price(2)
+                .price(BigDecimal.valueOf(2))
                 .image("image2")
                 .name("name2")
                 .description("description2")
@@ -392,7 +396,7 @@ class OrderServiceImplTest {
         List<ProductDTO> productDTOList = new ArrayList<>();
         productDTOList.add(ProductDTO.builder()
                 .id(3)
-                .price(3)
+                .price(BigDecimal.valueOf(3))
                 .image("image3")
                 .name("name3")
                 .description("description3")
@@ -402,7 +406,7 @@ class OrderServiceImplTest {
                 .build());
         productDTOList.add(ProductDTO.builder()
                 .id(4)
-                .price(4)
+                .price(BigDecimal.valueOf(4))
                 .image("image4")
                 .name("name4")
                 .description("description4")

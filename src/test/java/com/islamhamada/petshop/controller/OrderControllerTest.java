@@ -36,6 +36,7 @@ import org.wiremock.spring.EnableWireMock;
 import org.wiremock.spring.InjectWireMock;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -336,7 +337,7 @@ public class OrderControllerTest {
             long user_id = 1;
 
             Order order1 = orderRepository.save(Order.builder()
-                    .price(5)
+                    .price(BigDecimal.valueOf(5))
                     .time(Instant.now())
                     .firstName("firstName1")
                     .lastName("lastName1")
@@ -360,7 +361,7 @@ public class OrderControllerTest {
                     .build());
 
             Order order2 = orderRepository.save(Order.builder()
-                    .price(10)
+                    .price(BigDecimal.valueOf(10))
                     .time(Instant.now())
                     .firstName("firstName2")
                     .lastName("lastName2")
@@ -394,7 +395,7 @@ public class OrderControllerTest {
             assertEquals(elaborateOrder1.getStreet(), order1.getStreet());
             assertEquals(elaborateOrder1.getHouseNumber(), order1.getHouseNumber());
             assertEquals(elaborateOrder1.getPostalCode(), order1.getPostalCode());
-            assertEquals(elaborateOrder1.getPrice(), order1.getPrice());
+            assertEquals(elaborateOrder1.getPrice().doubleValue(), order1.getPrice().doubleValue());
             assertEquals(elaborateOrder1.getPhoneNumber(), order1.getPhoneNumber());
             assertEquals(elaborateOrder1.getTime().toEpochMilli(), order1.getTime().toEpochMilli());
 
@@ -416,7 +417,7 @@ public class OrderControllerTest {
             assertEquals(elaborateOrder2.getStreet(), order2.getStreet());
             assertEquals(elaborateOrder2.getHouseNumber(), order2.getHouseNumber());
             assertEquals(elaborateOrder2.getPostalCode(), order2.getPostalCode());
-            assertEquals(elaborateOrder2.getPrice(), order2.getPrice());
+            assertEquals(elaborateOrder2.getPrice().doubleValue(), order2.getPrice().doubleValue());
             assertEquals(elaborateOrder2.getPhoneNumber(), order2.getPhoneNumber());
             assertEquals(elaborateOrder2.getTime().toEpochMilli(), order2.getTime().toEpochMilli());
 
@@ -452,7 +453,7 @@ public class OrderControllerTest {
                             .withFault(Fault.CONNECTION_RESET_BY_PEER)));
             long userId = 1;
             Order order = Order.builder()
-                    .price(5)
+                    .price(BigDecimal.valueOf(5))
                     .time(Instant.now())
                     .firstName("firstName1")
                     .lastName("lastName1")
