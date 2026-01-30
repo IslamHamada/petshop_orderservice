@@ -9,7 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity(name = "order_item")
 @Data
 @Builder
 @AllArgsConstructor
@@ -22,6 +22,7 @@ public class OrderItem {
     @ManyToOne
     private Order order;
 
+    @Column(name = "product_id")
     private long productId;
 
     private int count;
