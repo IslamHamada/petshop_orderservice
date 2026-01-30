@@ -11,6 +11,7 @@ import java.util.List;
 
 @FeignClient(
         name = "CartService",
+        url = "${CartService.url:}",
         path = "/cart",
         fallbackFactory = CartServiceFallbackFactory.class
 )
