@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.http.Fault;
-import com.islamhamada.petshop.OrderServiceConfig;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderDTO;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderItemDTO;
 import com.islamhamada.petshop.contracts.model.RestExceptionResponse;
@@ -30,12 +28,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.StreamUtils;
+import org.wiremock.spring.ConfigureWireMock;
+import org.wiremock.spring.EnableWireMock;
+import org.wiremock.spring.InjectWireMock;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -52,7 +50,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest({"server.port=0"})
 @EnableConfigurationProperties
 @AutoConfigureMockMvc
-@ContextConfiguration(classes = {OrderServiceConfig.class})
+@EnableWireMock({
+        @ConfigureWireMock(
+                name = "ProductService",
+                baseUrlProperties = "ProductService.url"),
+        @ConfigureWireMock(
+                name = "CartService",
+                baseUrlProperties = "CartService.url")
+})
 public class OrderControllerTest {
 
     @Autowired
@@ -64,26 +69,11 @@ public class OrderControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    public static WireMockServer cartService = new WireMockServer(WireMockConfiguration
-                    .wireMockConfig()
-                    .dynamicPort());
+    @InjectWireMock("ProductService")
+    private static WireMockServer productService;
 
-    public static WireMockServer productService = new WireMockServer(WireMockConfiguration
-            .wireMockConfig()
-            .dynamicPort());
-
-    public OrderControllerTest() {
-        cartService.start();
-        productService.start();
-    }
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        String cartServiceUrl = "http://localhost:" + cartService.port();
-        String productServiceUrl = "http://localhost:" + productService.port();
-        registry.add("cart-service-svc.url", () -> cartServiceUrl);
-        registry.add("product-service-svc.url", () -> productServiceUrl);
-    }
+    @InjectWireMock("CartService")
+    private static WireMockServer cartService;
 
     ObjectMapper objectMapper = new ObjectMapper()
             .findAndRegisterModules()
