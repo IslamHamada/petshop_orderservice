@@ -59,7 +59,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 name = "cart-service-svc",
                 baseUrlProperties = "cart-service-svc.url")
 })
-public class OrderControllerTest {
+class OrderControllerTest {
 
     @Autowired
     OrderRepository orderRepository;
