@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,9 +85,9 @@ public class OrderServiceImpl implements OrderService{
                     orderItem.setOrder(order);
                 }
         );
-        double price = elaborateOrderItems.stream()
-                .mapToDouble(o -> o.getPrice() * o.getCount())
-                .sum();
+        BigDecimal price = elaborateOrderItems.stream()
+                .map(o -> o.getPrice().multiply(BigDecimal.valueOf(o.getCount())))
+                .reduce(BigDecimal.valueOf(0), (o1, o2) -> o1.add(o2));
         order.setPrice(price);
         order.setOrderItems(orderItems);
         orderRepository.save(order);
