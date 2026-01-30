@@ -53,11 +53,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @EnableWireMock({
         @ConfigureWireMock(
-                name = "ProductService",
-                baseUrlProperties = "ProductService.url"),
+                name = "product-service-svc",
+                baseUrlProperties = "product-service-svc.url"),
         @ConfigureWireMock(
-                name = "CartService",
-                baseUrlProperties = "CartService.url")
+                name = "cart-service-svc",
+                baseUrlProperties = "cart-service-svc.url")
 })
 public class OrderControllerTest {
 
@@ -70,10 +70,10 @@ public class OrderControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-    @InjectWireMock("ProductService")
+    @InjectWireMock("product-service-svc")
     private static WireMockServer productService;
 
-    @InjectWireMock("CartService")
+    @InjectWireMock("cart-service-svc")
     private static WireMockServer cartService;
 
     ObjectMapper objectMapper = new ObjectMapper()
