@@ -2,6 +2,7 @@ package com.islamhamada.petshop.service;
 
 import com.islamhamada.petshop.contracts.dto.ElaborateCartItemDTO;
 import com.islamhamada.petshop.contracts.dto.ProductDTO;
+import com.islamhamada.petshop.contracts.model.KafkaUserMessage;
 import com.islamhamada.petshop.contracts.model.ReduceQuantityRequest;
 import com.islamhamada.petshop.entity.Order;
 import com.islamhamada.petshop.entity.OrderItem;
@@ -16,6 +17,7 @@ import com.islamhamada.petshop.repository.OrderRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -38,6 +40,9 @@ public class OrderServiceImpl implements OrderService{
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private KafkaTemplate<String, KafkaUserMessage> kafkaTemplate;
 
     @Override
     public ElaborateOrderDTO orderUserCart(long user_id, OrderCartRequest request) {
@@ -111,6 +116,11 @@ public class OrderServiceImpl implements OrderService{
         log.info("Calling cart service to empty user cart on ordering");
         cartService.emptyCartOfUser(user_id);
         log.info("User cart successfully ordered");
+        int itemsCount = orderItems.stream().map(i -> i.getCount()).reduce(0, (x, y) -> x + y);
+        kafkaTemplate.send("notification", KafkaUserMessage.builder()
+                .userId(user_id)
+                .message("New order of " + itemsCount + " items successfully issued")
+                .build());
         return elaborateOrder;
     }
 
