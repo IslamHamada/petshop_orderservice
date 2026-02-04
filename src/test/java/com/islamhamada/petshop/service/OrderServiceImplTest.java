@@ -4,6 +4,7 @@ import com.islamhamada.petshop.contracts.dto.ElaborateCartItemDTO;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderDTO;
 import com.islamhamada.petshop.contracts.dto.ElaborateOrderItemDTO;
 import com.islamhamada.petshop.contracts.dto.ProductDTO;
+import com.islamhamada.petshop.contracts.model.KafkaUserMessage;
 import com.islamhamada.petshop.entity.Order;
 import com.islamhamada.petshop.entity.OrderItem;
 import com.islamhamada.petshop.exception.OrderServiceException;
@@ -20,6 +21,8 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -30,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
+@EmbeddedKafka(partitions = 1, topics = "notification")
 class OrderServiceImplTest {
 
     @Mock
@@ -43,6 +47,9 @@ class OrderServiceImplTest {
 
     @Mock
     private ProductService productService;
+
+    @Mock
+    private KafkaTemplate<String, KafkaUserMessage> kafkaTemplate;
 
     @InjectMocks
     private OrderService orderService = new OrderServiceImpl();
