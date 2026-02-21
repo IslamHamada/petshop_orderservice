@@ -44,6 +44,11 @@ spec:
                 configMapKeyRef:
                   key: zipkin_url
                   name: zipkin-cm
+            - name: KAFKA_URL
+              valueFrom:
+                configMapKeyRef:
+                  key: kafka_url
+                  name: kafka-cm
 
 ---
 apiVersion: v1
