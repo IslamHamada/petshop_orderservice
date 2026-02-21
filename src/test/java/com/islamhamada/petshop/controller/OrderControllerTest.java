@@ -61,7 +61,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 baseUrlProperties = "cart-service-svc.url")
 })
 @EmbeddedKafka(partitions = 1, topics = "notification")
-public class OrderControllerTest {
+class OrderControllerTest {
 
     @Autowired
     OrderRepository orderRepository;
